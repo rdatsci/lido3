@@ -1,0 +1,4 @@
+#!/bin/bash
+
+squeue -u $USER -o "%.10i %.9P %.2t %.10M %.6D %.6C %R"
+

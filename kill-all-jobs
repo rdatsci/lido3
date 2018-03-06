@@ -1,0 +1,17 @@
+#!/bin/bash
+
+NJOBS=$(squeue -h -o %i -u $USER | wc -l)
+
+if [[ $NJOBS -gt 0 ]] ; then
+  echo -n "Really kill all ($NJOBS) jobs (y/n)? "
+  read a
+  if [[ $a == "y" ]] ; then
+    echo "Hallo Darkness my old friend ..."
+    scancel $(squeue -h -o %i -u $USER)
+  else
+    echo "Your command, master."
+  fi
+else
+  echo "No jobs to kill, my lord."
+fi
+
