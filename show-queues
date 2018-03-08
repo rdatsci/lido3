@@ -9,7 +9,7 @@ import subprocess
 queue_names = ['short', 'med', 'long', 'ultralong']
 
 # get jobs
-command = 'squeue -h -o "%.18i %.9P %.8j %.8u %.2t %.10M %.6D %.6C %R"'
+command = 'squeue -h -o "%.12P %u %t %C"'
 jobs = subprocess.Popen([command], stdout = subprocess.PIPE, shell = True)
 jobs = jobs.stdout.readlines()
 
@@ -32,27 +32,27 @@ user_name = getpass.getuser()
 
 # Loop jobs
 for job in jobs:
-  # 1: Partition, 3: User, 4: Status, 6: Nodes, 7: Cpus
+  # 0: Partition, 1: User, 2: Status, 3: Cpus
   job = job.split()
 	# skip status CG
-  if job[4] == 'CG':
+  if job[2] == 'CG':
     continue
   # Check Partition
-  if job[1] not in que_tot.keys():
-    que_tot = append_partition(que_tot, job[1])
-    que_usr = append_partition(que_usr, job[1])
-    queue_names.append(job[1])
+  if job[0] not in que_tot.keys():
+    que_tot = append_partition(que_tot, job[0])
+    que_usr = append_partition(que_usr, job[0])
+    queue_names.append(job[0])
   # Count
-  que_tot[job[1]][job[4]] += 1
-  que_tot[job[1]][job[4] + 'nds'] += int(job[7])
-  if job[3] == user_name:
-    que_usr[job[1]][job[4]] += 1
-    que_usr[job[1]][job[4] + 'nds'] += int(job[7])
+  que_tot[job[0]][job[2]] += 1
+  que_tot[job[0]][job[2] + 'nds'] += int(job[3])
+  if job[1] == user_name:
+    que_usr[job[0]][job[2]] += 1
+    que_usr[job[0]][job[2] + 'nds'] += int(job[3])
 
 # Output
-table_format_header = '{:>10s} | {:^11s} | {:^11s}'
-table_format = '{0[name]:>10s} | {0[R]:4d} - {0[Rnds]:4d} | {0[PD]:4d} - {0[PDnds]:4d}'
-table_width = 38
+table_format_header = '{:>14s} | {:^11s} | {:^11s}'
+table_format = '{0[name]:>14s} | {0[R]:4d} - {0[Rnds]:4d} | {0[PD]:4d} - {0[PDnds]:4d}'
+table_width = 42
 # Function
 def print_summary(queue, queue_names, table_format):
   tot = {'name':'total', 'R':0, 'Rnds':0, 'PD':0, 'PDnds':0}
