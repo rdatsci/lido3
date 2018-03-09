@@ -13,7 +13,6 @@ jobs = jobs.stdout.readlines()
 # Function to add one queue user 
 def append_user(queue, account, user):
   sortkey = account + user
-  print(sortkey)
   queue[sortkey] = {}
   queue[sortkey]['account'] = account
   queue[sortkey]['user'] = user
