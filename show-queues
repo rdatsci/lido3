@@ -17,10 +17,10 @@ jobs = jobs.stdout.readlines()
 def append_partition(queue, name):
   queue[name] = {}
   queue[name]['name'] = name 
-  for st in ['R', 'Rnds', 'PD', 'PDnds']:
+  for st in ['R', 'Rcpu', 'PD', 'PDcpu']:
     queue[name][st] = 0
   return queue
-# init queue counter variable (nds: number of nodes)
+# init dict: queue counter variable
 que_tot = {}
 que_usr = {}
 for qn in queue_names:
@@ -34,33 +34,37 @@ user_name = getpass.getuser()
 for job in jobs:
   # 0: Partition, 1: User, 2: Status, 3: Cpus
   job = job.split()
-	# skip status CG
-  if job[2] == 'CG':
+  part = job[0] 
+  user = job[1] 
+  status = job[2]
+  cpus = int(job[3])
+  # skip status CG
+  if status not in ('R', 'PD'):
     continue
   # Check Partition
-  if job[0] not in que_tot.keys():
-    que_tot = append_partition(que_tot, job[0])
-    que_usr = append_partition(que_usr, job[0])
-    queue_names.append(job[0])
+  if part not in que_tot.keys():
+    que_tot = append_partition(que_tot, part)
+    que_usr = append_partition(que_usr, part)
+    queue_names.append(part)
   # Count
-  que_tot[job[0]][job[2]] += 1
-  que_tot[job[0]][job[2] + 'nds'] += int(job[3])
-  if job[1] == user_name:
-    que_usr[job[0]][job[2]] += 1
-    que_usr[job[0]][job[2] + 'nds'] += int(job[3])
+  que_tot[part][status] += 1
+  que_tot[part][status + 'cpu'] += int(cpus)
+  if user == user_name:
+    que_usr[part][status] += 1
+    que_usr[part][status + 'cpu'] += int(cpus)
 
 # Output
 table_format_header = '{:>14s} | {:^11s} | {:^11s}'
-table_format = '{0[name]:>14s} | {0[R]:4d} - {0[Rnds]:4d} | {0[PD]:4d} - {0[PDnds]:4d}'
+table_format = '{0[name]:>14s} | {0[R]:4d} - {0[Rcpu]:4d} | {0[PD]:4d} - {0[PDcpu]:4d}'
 table_width = 42
 # Function
 def print_summary(queue, queue_names, table_format):
-  tot = {'name':'total', 'R':0, 'Rnds':0, 'PD':0, 'PDnds':0}
+  total = {'name':'total', 'R':0, 'Rcpu':0, 'PD':0, 'PDcpu':0}
   for qn in queue_names:
     print(table_format.format(queue[qn]))
-    for st in ['R', 'Rnds', 'PD', 'PDnds']:
-      tot[st] += queue[qn][st]
-  print(table_format.format(tot))
+    for st in ['R', 'Rcpu', 'PD', 'PDcpu']:
+      total[st] += queue[qn][st]
+  print(table_format.format(total))
 # Prints 
 print(table_format_header.format('', 'Running', 'Pending'))
 print(table_format_header.format('Queues', 'Jobs - Cpus', 'Jobs - Cpus'))
