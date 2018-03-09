@@ -8,7 +8,7 @@ import subprocess
 # known queues names
 queue_names = ['short', 'med', 'long', 'ultralong']
 
-# get jobs
+# get jobs with format "Partition, User, Status, Cpus"
 command = 'squeue -h -o "%.12P %u %t %C"'
 jobs = subprocess.Popen([command], stdout = subprocess.PIPE, shell = True)
 jobs = jobs.stdout.readlines()
