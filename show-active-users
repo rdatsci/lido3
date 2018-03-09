@@ -1,0 +1,64 @@
+#!/usr/bin/env python
+
+# get loginname
+import getpass
+# send command to os
+import subprocess
+
+# get jobs with format "Account, User, Status, Cpus"
+command = 'squeue -h -o "%a %u %t %C"'
+jobs = subprocess.Popen([command], stdout = subprocess.PIPE, shell = True)
+jobs = jobs.stdout.readlines()
+
+# Function to add one queue user 
+def append_user(queue, account, user):
+  sortkey = account + user
+  print(sortkey)
+  queue[sortkey] = {}
+  queue[sortkey]['account'] = account
+  queue[sortkey]['user'] = user
+  for st in ['R', 'Rcpu', 'PD', 'PDcpu']:
+    queue[sortkey][st] = 0
+  return queue
+# init dict: queue counter variable
+queue = {}
+
+# Loop jobs
+for job in jobs:
+  # 0: Account, 1: User, 2: Status, 3: Cpus
+  job = job.split()
+  account = job[0]
+  user = job[1]
+  status = job[2]
+  cpus = int(job[3])
+  # skip status CG
+  if status not in ('R', 'PD'):
+    continue
+  # generate sortkey
+  sortkey = account + user
+  # check user via sortkey
+  if sortkey not in queue.keys():
+    queue = append_user(queue, account, user)
+  # Count
+  queue[sortkey][status] += 1
+  queue[sortkey][status + 'cpu'] += cpus
+
+# Output
+table_format_header = '{:>5s} {:>9s} | {:^11s} | {:^11s}'
+table_format = '{0[account]:>5s} {0[user]:>9s} | {0[R]:4d} - {0[Rcpu]:4d} | {0[PD]:4d} - {0[PDcpu]:4d}'
+table_width = 43
+# Function
+def print_queue(queue, table_format):
+  # calculate total number of jobs and cpus
+  total = {'account':'-', 'user':'total', 'R':0, 'Rcpu':0, 'PD':0, 'PDcpu':0}
+  for sortkey in sorted(queue):
+    print(table_format.format(queue[sortkey]))
+    for st in ['R', 'Rcpu', 'PD', 'PDcpu']:
+      total[st] += queue[sortkey][st]
+  print(table_format.format(total))
+# Prints 
+print(table_format_header.format('', '', 'Running', 'Pending'))
+print(table_format_header.format('Acc', 'User', 'Jobs - Cpus', 'Jobs - Cpus'))
+print(('{:-^' + str(table_width) + '}').format(''))
+print_queue(queue, table_format)
+  
