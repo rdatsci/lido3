@@ -43,9 +43,9 @@ for job in jobs:
   queue[sortkey][status + 'cpu'] += cpus
 
 # Output
-table_format_header = '{:>5s} {:>9s} | {:^11s} | {:^11s}'
-table_format = '{0[account]:>5s} {0[user]:>9s} | {0[R]:4d} - {0[Rcpu]:4d} | {0[PD]:4d} - {0[PDcpu]:4d}'
-table_width = 43
+table_format_header = '{:>5s} {:>8s} | {:^11s} | {:^11s}'
+table_format = '{0[account]:>5s} {0[user]:>8s} | {0[R]:4d} - {0[Rcpu]:5d} | {0[PD]:4d} - {0[PDcpu]:5d}'
+table_width = 44
 # Function
 def print_queue(queue, table_format):
   # calculate total number of jobs and cpus
@@ -57,7 +57,7 @@ def print_queue(queue, table_format):
   print(table_format.format(total))
 # Prints 
 print(table_format_header.format('', '', 'Running', 'Pending'))
-print(table_format_header.format('Acc', 'User', 'Jobs - Cpus', 'Jobs - Cpus'))
+print(table_format_header.format('Acc', 'User', 'Jobs -  Cpus', 'Jobs -  Cpus'))
 print(('{:-^' + str(table_width) + '}').format(''))
 print_queue(queue, table_format)
   

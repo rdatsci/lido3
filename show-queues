@@ -54,9 +54,9 @@ for job in jobs:
     que_usr[part][status + 'cpu'] += int(cpus)
 
 # Output
-table_format_header = '{:>14s} | {:^11s} | {:^11s}'
-table_format = '{0[name]:>14s} | {0[R]:4d} - {0[Rcpu]:4d} | {0[PD]:4d} - {0[PDcpu]:4d}'
-table_width = 42
+table_format_header = '{:>14s} | {:^12s} | {:^12s}'
+table_format = '{0[name]:>14s} | {0[R]:4d} - {0[Rcpu]:5d} | {0[PD]:4d} - {0[PDcpu]:5d}'
+table_width = 44
 # Function
 def print_summary(queue, queue_names, table_format):
   total = {'name':'total', 'R':0, 'Rcpu':0, 'PD':0, 'PDcpu':0}
@@ -67,7 +67,7 @@ def print_summary(queue, queue_names, table_format):
   print(table_format.format(total))
 # Prints 
 print(table_format_header.format('', 'Running', 'Pending'))
-print(table_format_header.format('Queues', 'Jobs - Cpus', 'Jobs - Cpus'))
+print(table_format_header.format('Queues', 'Jobs -  Cpus', 'Jobs -  Cpus'))
 print(('{:-^' + str(table_width) + '}').format('Total'))
 print_summary(que_tot, queue_names, table_format)
 print(('{:-^' + str(table_width) + '}').format('User'))
