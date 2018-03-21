@@ -43,7 +43,7 @@ for job in jobs:
   queue[sortkey][status + 'cpu'] += cpus
 
 # Output
-table_format_header = '{:>5s} {:>8s} | {:^11s} | {:^11s}'
+table_format_header = '{:>5s} {:>8s} | {:^12s} | {:^12s}'
 table_format = '{0[account]:>5s} {0[user]:>8s} | {0[R]:4d} - {0[Rcpu]:5d} | {0[PD]:4d} - {0[PDcpu]:5d}'
 table_width = 44
 # Function
