@@ -10,3 +10,5 @@
 1. Copy the scripts `kill-all-jobs`, `my-jobs`, `show-queues`, ... to `~/bin`
 1. Add permission to execute the scripts via `chmod u+x *`
 
+## Additional Links
+[Scheduling LiDO3](http://www.lido.tu-dortmund.de/cms/de/LiDO3/Warteschlangensystem/index.html)
