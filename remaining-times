@@ -6,7 +6,7 @@ library(BBmisc)
 s = system3("squeue", stdout = TRUE, args = "-u $USER -o '%l %L %t'")$output
 
 if (length(s) == 0) {
-  print("No jobs on system!")
+  cat("No jobs on system!\n")
 } else {
   tab = read.table(textConnection(s), header = TRUE, stringsAsFactors = FALSE)
   tab = as.data.table(tab)
